@@ -20,7 +20,6 @@ RUN cd /opt/go/src && ./all.bash
 
 # clean up
 RUN rm -rf /opt/go/.git
-RUN apt-get remove -y --purge git && apt-get autoremove -y
 RUN apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
