@@ -1,3 +1,4 @@
+default: build-docker
 
 GOLANG_VERSION=1.4.3
 
