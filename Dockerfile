@@ -5,8 +5,8 @@ ENV GOLANG_MAJOR 1.4
 ENV GOLANG_VERSION 1.4.3
 
 # install dependencies
-RUN apt-get update
-RUN apt-get install -y \
+RUN apt-get update \
+	&& apt-get install -y \
 	git \
 	gcc
 
