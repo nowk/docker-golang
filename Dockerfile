@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.17
+FROM debian:jessie
 MAINTAINER Yung Hwa Kwon <yung.kwon@damncarousel.com>
 
 ENV GOLANG_MAJOR 1.5
@@ -7,6 +7,7 @@ ENV GOLANG_VERSION 1.5.1
 # install dependencies
 RUN apt-get update \
 	&& apt-get install -y \
+	curl \
 	git \
 	gcc
 
