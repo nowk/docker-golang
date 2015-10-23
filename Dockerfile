@@ -32,19 +32,9 @@ RUN rm -rf /opt/go/.git \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# create user and base go dirs.
-# User must be initialized explicitly by the user
-ONBUILD RUN adduser --disabled-password --uid 1001 --gecos '' golang \
-	&& mkdir -p /go/src /go/bin \
-	&& chown -R golang:golang /go
-
 # go envs
-ONBUILD ENV GOROOT /opt/go
-ONBUILD ENV GOPATH /go
-ONBUILD ENV PATH $GOROOT/bin:$GOPATH/bin:$PATH
-
-# mount your local go/src
-ONBUILD VOLUME /go/src
+ENV GOROOT /opt/go
+ENV PATH $GOROOT/bin:$PATH
 
 
 LABEL \

@@ -1,18 +1,17 @@
-# golang-env
+# golang-base
 
-Golang Docker environment
+Golang Docker Base Image
 
 ## Usage
 
-    FROM nowk/golang-env:<VERSION>
+    FROM nowk/golang-base:<VERSION>
 
 ---
 
-| Environment Vars |                     |
-| ------ | ----------------------------- |
-| GOROOT | /opt/go                       |
-| GOPATH | /go                           |
-| PATH   | $GOROOT/bin:$GOPATH/bin:$PATH |
+| Environment Vars |                   |
+| ---------------- | ----------------- |
+| GOROOT           | /opt/go           |
+| PATH             | $GOROOT/bin:$PATH |
 
 ---
 
@@ -22,15 +21,4 @@ Golang Docker environment
 | 1.5.1\*  |
 
 \**1.5.1 build uses the binary release for installation due to tests failures during the source build.*
-
-## Example
-
-    FROM nowk/golang-env:1.5.1
-
-    WORKDIR /go/src/github.com/name/project
-
-    ---
-
-    docker build --rm -t mygoproject .
-    docker run -v $GOPATH/src:/go/src --rm -it mygoproject go test ./...
 

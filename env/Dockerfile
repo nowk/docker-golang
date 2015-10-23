@@ -1,0 +1,15 @@
+FROM nowk/golang-base:1.5.1
+MAINTAINER Yung Hwa Kwon <yung.kwon@damncarousel.com>
+
+# create user and base go dirs.
+# User must be initialized explicitly by the user
+ONBUILD RUN adduser --disabled-password --uid 1001 --gecos '' golang \
+	&& mkdir -p /go/src /go/bin \
+	&& chown -R golang:golang /go
+
+ONBUILD ENV GOPATH /go
+ONBUILD ENV PATH $GOPATH/bin:$PATH
+
+# mount your local go/src
+ONBUILD VOLUME /go/src
+
