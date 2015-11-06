@@ -41,7 +41,7 @@ Golang Docker enviroment
 
 | User   | UID  | SUDO  |
 | ------ | ---- | ----- |
-| golang | 1001 | false |
+| golang | 1000 | false |
 
 *Switching `USER` must be explicitly called.*
 
