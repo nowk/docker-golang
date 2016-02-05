@@ -1,20 +1,25 @@
+NAME=nowk/golang
+VERSION=1.4.3
 
-GOLANG_VERSION=1.5.1
+default: $(VERSION)
 
-default: build-all
+base:
+	docker build -f Dockerfile.$@ --rm -t $(NAME)-$@:$(VERSION) .
 
+onbuild: base
+	docker build -f Dockerfile.$@ --rm -t $(NAME)-$@:$(VERSION) .
 
-build-docker-base:
-	docker build \
-		-f Dockerfile.base \
-		--rm -t nowk/golang-base:${GOLANG_VERSION} .
-
-
-build-docker-env:
-	docker build \
-		-f Dockerfile.env \
-		--rm -t nowk/golang-env:${GOLANG_VERSION} .
+$(VERSION): onbuild
+	docker build --rm -t $(NAME):$(VERSION) .
 
 
-build-all: build-docker-base build-docker-env
+push:
+	docker push $(NAME)-base:$(VERSION)
+	docker push $(NAME)-onbuild:$(VERSION)
+	docker push $(NAME):$(VERSION)
 
+$.PHONY: push
+
+go-shared-volume:
+	docker run \
+		-v /opt/go -v /go/bin -v /go/pkg --name gov$(VERSION) $(NAME):$(VERSION)
