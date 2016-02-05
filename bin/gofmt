@@ -1,0 +1,12 @@
+#!/bin/sh
+# vim: set filetype=sh :
+set -e
+
+WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
+
+docker run --rm -t \
+	--volumes-from gov1.4.3 \
+	-v ${GOPATH}/src:/go/src \
+	-w ${WORKDIR} \
+	--entrypoint /opt/go/bin/gofmt \
+	nowk/golang:1.4.3 "$@" | replipe -a /go -b ${GOPATH}
