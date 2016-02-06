@@ -9,5 +9,6 @@ docker run --rm -t \
 	--volumes-from gov${VERSION} \
 	-v ${GOPATH}/src:/go/src \
 	-w ${WORKDIR} \
+	-u $(id -u $(whoami)) \
 	--entrypoint /opt/go/bin/godoc \
 	nowk/golang:${VERSION} "$@" | replipe -a /go -b ${GOPATH}

@@ -8,7 +8,9 @@ WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
 docker run --rm -t \
 	--volumes-from gov${VERSION} \
 	-v ${GOPATH}/src:/go/src \
-	-w ${WORKDIR} nowk/golang:${VERSION} "$@" | replipe -a /go -b ${GOPATH}
+	-w ${WORKDIR} \
+	-u $(id -u $(whoami)) \
+	nowk/golang:${VERSION} "$@" | replipe -a /go -b ${GOPATH}
 
 # replipe changes the output paths from the docker to your locak fs gopaths
 
