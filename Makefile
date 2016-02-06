@@ -18,7 +18,7 @@ push:
 	docker push $(NAME)-onbuild:$(VERSION)
 	docker push $(NAME):$(VERSION)
 
-$.PHONY: push
+$.PHONY: push go-shared-volume
 
 go-shared-volume:
 	docker run \
