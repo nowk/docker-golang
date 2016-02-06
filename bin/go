@@ -5,9 +5,9 @@ set -e
 WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
 
 docker run --rm -t \
-	--volumes-from gov1.4.3 \
+	--volumes-from gov1.5.1 \
 	-v ${GOPATH}/src:/go/src \
-	-w ${WORKDIR} nowk/golang:1.4.3 "$@" | replipe -a /go -b ${GOPATH}
+	-w ${WORKDIR} nowk/golang:1.5.1 "$@" | replipe -a /go -b ${GOPATH}
 
 # replipe changes the output paths from the docker to your locak fs gopaths
 

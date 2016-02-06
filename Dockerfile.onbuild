@@ -1,4 +1,4 @@
-FROM nowk/golang-base:1.4.3
+FROM nowk/golang-base:1.5.1
 MAINTAINER Yung Hwa Kwon <yung.kwon@damncarousel.com>
 
 # create user and base go dirs.

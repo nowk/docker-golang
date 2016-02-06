@@ -5,8 +5,8 @@ set -e
 WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
 
 docker run --rm -t \
-	--volumes-from gov1.4.3 \
+	--volumes-from gov1.5.1 \
 	-v ${GOPATH}/src:/go/src \
 	-w ${WORKDIR} \
 	--entrypoint /opt/go/bin/gofmt \
-	nowk/golang:1.4.3 "$@" | replipe -a /go -b ${GOPATH}
+	nowk/golang:1.5.1 "$@" | replipe -a /go -b ${GOPATH}

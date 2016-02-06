@@ -1,4 +1,4 @@
-FROM nowk/golang-onbuild:1.4.3
+FROM nowk/golang-onbuild:1.5.1
 MAINTAINER Yung Hwa Kwon <yung.kwon@damncarousel.com>
 
 ENTRYPOINT [ "/opt/go/bin/go" ]

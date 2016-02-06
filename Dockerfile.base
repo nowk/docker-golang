@@ -1,8 +1,8 @@
 FROM debian:jessie
 MAINTAINER Yung Hwa Kwon <yung.kwon@damncarousel.com>
 
-ENV GOLANG_MAJOR 1.4
-ENV GOLANG_VERSION 1.4.3
+ENV GOLANG_MAJOR 1.5
+ENV GOLANG_VERSION 1.5.1
 
 # install dependencies
 RUN apt-get update \
