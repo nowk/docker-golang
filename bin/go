@@ -2,12 +2,13 @@
 # vim: set filetype=sh :
 set -e
 
+VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
 WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
 
 docker run --rm -t \
-	--volumes-from gov1.5.1 \
+	--volumes-from gov${VERSION} \
 	-v ${GOPATH}/src:/go/src \
-	-w ${WORKDIR} nowk/golang:1.5.1 "$@" | replipe -a /go -b ${GOPATH}
+	-w ${WORKDIR} nowk/golang:${VERSION} "$@" | replipe -a /go -b ${GOPATH}
 
 # replipe changes the output paths from the docker to your locak fs gopaths
 

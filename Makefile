@@ -1,5 +1,5 @@
 NAME=nowk/golang
-VERSION=1.5.1
+VERSION=$(shell cat $(shell readlink -f "./VERSION"))
 
 default: $(VERSION)
 
