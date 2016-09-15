@@ -1,14 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 # vim: set filetype=sh :
 set -e
 
-VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
-WORKDIR=$(echo $(pwd) | sed "s#$GOPATH#/go/#")
+args=("${@}" -- --entrypoint godoc)
+go ${args[@]}
 
-docker run --rm -t \
-	--volumes-from gov${VERSION} \
-	-v ${GOPATH}/src:/go/src \
-	-w ${WORKDIR} \
-	-u $(id -u $(whoami)) \
-	--entrypoint /opt/go/bin/godoc \
-	nowk/golang:${VERSION} "$@" | replipe -a /go -b ${GOPATH}
