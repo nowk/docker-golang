@@ -2,6 +2,6 @@
 # vim: set filetype=sh :
 set -e
 
-args=("${@}" -- --entrypoint godoc)
+args=("${@}" -- --rm --entrypoint godoc)
 go ${args[@]}
 

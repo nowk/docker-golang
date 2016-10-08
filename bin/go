@@ -10,7 +10,7 @@ DOCKER_IMAGE="golang:${VERSION}"
 
 echo "$0 $@" >> "$(dirname $0)/../go.log" # debug
 
-docker $(run_with --rm -it --volumes-from gov${VERSION} -e GO15VENDOREXPERIMENT=1 \
+docker $(run_with --volumes-from gov${VERSION} \
 	-v ~/.ssh:/.ssh \
 	-v ${GOPATH}/src:/go/src \
 	-w $(echo $(pwd) | sed "s#$GOPATH#/go#") \
