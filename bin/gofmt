@@ -2,6 +2,20 @@
 # vim: set filetype=sh :
 set -e
 
-args=("$@" -- --rm -t -v /tmp:/tmp --entrypoint gofmt)
-go ${args[@]}
+VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
+DOCKER_IMAGE="golang:${VERSION}"
+
+# include _docker.sh
+. "$(dirname $0)/../lib/docker.sh/_docker.sh"
+
+docker $(run_with --rm -t --volumes-from gov${VERSION} \
+	-v /tmp:/tmp \
+	-v ${GOPATH}/src:/go/src \
+	-w $(echo $(pwd) | sed "s#$GOPATH#/go#") \
+	--entrypoint gofmt)
+
+
+# FIXME this does not work
+# args=("$@" -- --rm -t -v /tmp:/tmp --entrypoint gofmt)
+# go ${args[@]}
 
