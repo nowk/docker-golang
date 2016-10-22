@@ -2,15 +2,16 @@
 # vim: set filetype=sh :
 set -e
 
+NAME=golang
 VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
-DOCKER_IMAGE="golang:${VERSION}"
+DOCKER_IMAGE="${NAME}:${VERSION}"
 
 # include _docker.sh
 . "$(dirname $0)/../lib/docker.sh/_docker.sh"
 
 echo "$0 $@" >> "$(dirname $0)/../go.log" # debug
 
-docker $(run_with --volumes-from gov${VERSION} \
+docker $(run_with --volumes-from ${NAME}v${VERSION} \
 	-v ~/.ssh:/.ssh \
 	-v ${GOPATH}/src:/go/src \
 	-w $(echo $(pwd) | sed "s#$GOPATH#/go#") \
