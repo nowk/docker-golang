@@ -12,8 +12,8 @@ DOCKER_IMAGE="${NAME}:${VERSION}"
 echo "$0 $@" >> "$(dirname $0)/../go.log" # debug
 
 docker $(run_with --volumes-from ${NAME}v${VERSION} \
-	-v ~/.ssh:/.ssh \
-	-v ${GOPATH}/src:/go/src \
-	-w $(echo $(pwd) | sed "s#$GOPATH#/go#") \
+	-v=~/.ssh:/.ssh \
+	-v=${GOPATH}/src:/go/src \
+	-w=$(echo $(pwd) | sed "s#$GOPATH#/go#") \
 	--entrypoint go)
 
