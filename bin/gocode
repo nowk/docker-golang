@@ -2,23 +2,13 @@
 # vim: set filetype=sh :
 set -e
 
-NAME=golang
-VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
-DOCKER_IMAGE="${NAME}:${VERSION}"
+# FIXME works but YCM doesn't seem to be calling this file
 
-# include _docker.sh
-. "$(dirname $0)/../lib/docker.sh/_docker.sh"
+COMPOSE_DIR="$(dirname $0)"
 
-# override COMMAND_LINE_ARGS with post-process
-c=$(echo "$@" | sed "s#$GOPATH#/go#")
-COMMAND_LINE_ARGS=("${c[@]}")
+args=$(echo "$@" | sed "s#$GOPATH#/go#") # parse the local $GOPATH out with    
+                                         # docker $GOPATH /go
 
-echo "$0 $CMD" >> "$(dirname $0)/../gocode.log" # debug
+echo "$args" >> "$(dirname $0)/../gocode.log" # debug
 
-# vim-go uses a -f=/tmp/path/to/file when interacting with gocode, so we must 
-# mount /tmp onto the container
-docker $(run_with --rm -i --volumes-from ${NAME}v${VERSION} \
-	-v=/tmp:/tmp \
-	-v=${GOPATH}/src:/go/src \
-	--entrypoint gocode)
-
+docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm -T gocode ${args[@]}

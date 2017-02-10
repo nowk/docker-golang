@@ -2,21 +2,7 @@
 # vim: set filetype=sh :
 set -e
 
-NAME=golang
-VERSION=$(cat $(dirname $(readlink -f "$0"))/../VERSION)
-DOCKER_IMAGE="golang:${VERSION}"
+COMPOSE_DIR="$(dirname $0)"
 
-# include _docker.sh
-. "$(dirname $0)/../lib/docker.sh/_docker.sh"
-
-docker $(run_with --rm -t --volumes-from ${NAME}v${VERSION} \
-	-v=/tmp:/tmp \
-	-v=${GOPATH}/src:/go/src \
-	-w=$(echo $(pwd) | sed "s#$GOPATH#/go#") \
-	--entrypoint gofmt)
-
-
-# FIXME this does not work
-# args=("$@" -- --rm -t -v /tmp:/tmp --entrypoint gofmt)
-# go ${args[@]}
-
+# NOTE docker-compose allows TTY by default
+docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm gofmt "$@"

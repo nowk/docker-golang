@@ -1,0 +1,45 @@
+version: "2.0"
+services:
+  golang:
+    image: "golang:1.7.5"
+    volumes:
+      - ${GOPATH}/src:/go/src
+      - /tmp:/tmp # required by gofmt and gocode
+      - /go/bin
+      - /go/pkg
+
+  go:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    volumes:
+      - ~/.ssh:/root/.ssh
+    entrypoint: go
+    # NOTE this is set in ./bin/go through the -w flag
+    # working_dir: ${WORKING_DIR}
+
+  gofmt:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    entrypoint: gofmt
+
+  godoc:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    entrypoint: godoc
+
+  # install go get -u github.com/nsf/gocode
+  gocode:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    ports:
+      - 37373:37373
+    entrypoint: /go/bin/gocode
+

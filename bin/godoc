@@ -2,6 +2,13 @@
 # vim: set filetype=sh :
 set -e
 
-args=("${@}" -- --rm --entrypoint godoc)
-go ${args[@]}
+# FIXME vim-go requires GoInstallBinaries which are part of $GOPATH/bin our
+# compose file uses a volumes_from instead of an mounted volume to handle
+# future version options
 
+COMPOSE_DIR="$(dirname $0)"
+WORKING_DIR="$(echo $(pwd) | sed -E "s#(^.+)/go/#/go/#")"
+
+echo "$@" >> "$(dirname $0)/../godoc.log" # debug
+
+docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm -w $WORKING_DIR godoc "$@"

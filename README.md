@@ -1,6 +1,6 @@
 # golang 
 
-Golang Docker executable
+Golang Docker executable through docker-compose
 
 
 ## Install
