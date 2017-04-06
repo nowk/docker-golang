@@ -2,13 +2,28 @@
 # vim: set filetype=sh :
 set -e
 
-# FIXME vim-go requires GoInstallBinaries which are part of $GOPATH/bin our
-# compose file uses a volumes_from instead of an mounted volume to handle
-# future version options
-
 COMPOSE_DIR="$(dirname $0)"
-WORKING_DIR="$(echo $(pwd) | sed -E "s#(^.+)/go/#/go/#")"
+COMPOSE_YML="$(pwd)/docker-compose.yml"
 
-echo "$@" >> "$(dirname $0)/../godoc.log" # debug
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+fi
 
-docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm -w $WORKING_DIR godoc "$@"
+# TODO check for the godoc services, else default to the docker-golang compose
+# yml
+
+# replace pwd with the container's GOPATH (/go)
+WORKING_DIR="$(echo $(pwd) | sed "s#$GOPATH#/go#")"
+
+if [ "${GO_DEBUG}" = true ]; then
+	echo "$@" >> "$(dirname $0)/../godoc.log" # debug
+fi
+
+docker-compose --file="${COMPOSE_YML}" run \
+	--no-deps \
+	--rm \
+	-w $WORKING_DIR \
+	godoc "$@"
+

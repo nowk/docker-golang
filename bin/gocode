@@ -2,13 +2,46 @@
 # vim: set filetype=sh :
 set -e
 
-# FIXME works but YCM doesn't seem to be calling this file
-
 COMPOSE_DIR="$(dirname $0)"
+COMPOSE_YML="$(pwd)/docker-compose.yml"
 
-args=$(echo "$@" | sed "s#$GOPATH#/go#") # parse the local $GOPATH out with    
-                                         # docker $GOPATH /go
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+fi
 
-echo "$args" >> "$(dirname $0)/../gocode.log" # debug
+# TODO check for the gocodec service, else default to the docker-golang compose
+# yml
 
-docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm -T gocode ${args[@]}
+# parse the args and replace the GOPATH here with that of the docker
+# container's GOPATH
+args=$(echo "$@" | sed "s#$GOPATH#/go#")
+
+if [ "${GO_DEBUG}" = true ]; then
+	echo "$args" >> "$(dirname $0)/../gocode.log"
+fi
+
+# the --no-deps flag is required here, or the "Starting..." output breaks
+# autocomplete, or at least with YCM
+docker-compose --file="${COMPOSE_YML}" run \
+	--no-deps \
+	--rm \
+	-T \
+	--service-ports \
+	gocode ${args[@]}
+
+
+# A close docker raw equivalent. Note volumes-from is shared volume to for
+# shared go stuff. Leaving for reference. Was used to test speed
+#
+# docker run \
+# 	-i \
+# 	--volumes-from dockergolang_golang_1 \
+# 	-v ${GOPATH}/src:/go/src \
+# 	-v /tmp:/tmp \
+# 	-P \
+# 	-p 37373:37373 \
+# 	--entrypoint gocode \
+# 	golang:1.7.5 ${args[@]}
+

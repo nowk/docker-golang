@@ -4,7 +4,6 @@ services:
     image: "golang:1.7.5"
     volumes:
       - ${GOPATH}/src:/go/src
-      - /tmp:/tmp # required by gofmt and gocode
       - /go/bin
       - /go/pkg
 
@@ -24,6 +23,8 @@ services:
       service: golang
     volumes_from:
       - golang
+    volumes:
+      - /tmp:/tmp
     entrypoint: gofmt
 
   godoc:
@@ -31,6 +32,8 @@ services:
       service: golang
     volumes_from:
       - golang
+    ports:
+      - "6060:6060"
     entrypoint: godoc
 
   # install go get -u github.com/nsf/gocode
@@ -39,7 +42,10 @@ services:
       service: golang
     volumes_from:
       - golang
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
     ports:
-      - 37373:37373
+      - "37373:37373"
     entrypoint: /go/bin/gocode
 

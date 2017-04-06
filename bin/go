@@ -3,10 +3,27 @@
 set -e
 
 COMPOSE_DIR="$(dirname $0)"
-WORKING_DIR="$(echo $(pwd) | sed -E "s#(^.+)/go/#/go/#")"
+COMPOSE_YML="$(pwd)/docker-compose.yml"
 
-# debug
-echo "$WORKING_DIR" >> "$(dirname $0)/../go.log"
-echo "$@" >> "$(dirname $0)/../go.log"
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+fi
 
-docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm -w $WORKING_DIR go "$@"
+# TODO check for the go services, else default to the docker-golang compose yml
+
+# replace pwd with the container's GOPATH (/go)
+WORKING_DIR="$(echo $(pwd) | sed "s#$GOPATH#/go#")"
+
+if [ "${GO_DEBUG}" = true ]; then
+	echo "$WORKING_DIR" >> "$(dirname $0)/../go.log"
+	echo "$@" >> "$(dirname $0)/../go.log"
+fi
+
+docker-compose --file="${COMPOSE_YML}" run \
+	--no-deps \
+	--rm \
+	-w $WORKING_DIR \
+	go "$@"
+

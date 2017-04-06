@@ -3,6 +3,20 @@
 set -e
 
 COMPOSE_DIR="$(dirname $0)"
+COMPOSE_YML="$(pwd)/docker-compose.yml"
+
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+fi
+
+# TODO check for the gofmt services, else default to the docker-golang compose
+# yml
 
 # NOTE docker-compose allows TTY by default
-docker-compose --file="${COMPOSE_DIR}/../docker-compose.yml" run --rm gofmt "$@"
+docker-compose --file="${COMPOSE_YML}" run \
+	--no-deps \
+	--rm \
+	gofmt "$@"
+
