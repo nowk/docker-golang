@@ -1,13 +1,7 @@
 #!/bin/bash
 # vim: set filetype=sh :
 set -e
-
-if [ ! -f "$(pwd)/.golang" ]; then
-	echo "No \`.golang\` file (in \`$(pwd)\`), Run \`docker-golang-init\`"
-	exit 1
-fi
-
-source "$(pwd)/.golang"
+source "$(dirname $0)/.golang.sh"
 
 # replace pwd with the container's GOPATH (/go)
 # NOTE the expression here is because the actual path we call GO from may not
