@@ -49,3 +49,11 @@ services:
       - "37373:37373"
     entrypoint: /go/bin/gocode
 
+  # install `go get -u github.com/golang/lint/golint`
+  golint:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    entrypoint: /go/bin/golint
+

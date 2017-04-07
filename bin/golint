@@ -1,0 +1,26 @@
+#!/bin/bash
+# vim: set filetype=sh :
+set -e
+
+# golint wrapper
+#
+#     go get -u github.com/golang/lint/golint
+#
+
+COMPOSE_DIR="$(dirname $0)"
+COMPOSE_YML="$(pwd)/docker-compose.yml"
+
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+fi
+
+# TODO check for the golint services, else default to the docker-golang compose
+# yml
+
+docker-compose --file="${COMPOSE_YML}" run \
+	--no-deps \
+	--rm \
+	golint "$@"
+
