@@ -2,12 +2,28 @@
 
 DOT_GOLANG="$(dirname $0)/../.golang"
 
-if [ ! -f "$DOT_GOLANG" ]; then
-	DOT_GOLANG="$(pwd)/.golang"
-fi
+function find_dot_golang() {
+	# start here
+	cwd=$(pwd)
+
+	while [ ! "$cwd" = '/' ]; do
+		dot_golang="$cwd/.golang"
+
+		if [ -f "$dot_golang" ]; then
+			DOT_GOLANG="$dot_golang"
+
+			break;
+		fi
+
+		cwd="$(dirname $cwd)"
+	done
+}
+
+find_dot_golang
+
 
 if [ ! -f "$DOT_GOLANG" ]; then
-	echo "No \`.golang\` file (in \`$(pwd)\`), Run \`docker-golang-init\`"
+	echo "No \`.golang\` file (in \`$(dirname $DOT_GOLANG)\`), Run \`docker-golang-init\`"
 	exit 1
 fi
 

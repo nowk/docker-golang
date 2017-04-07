@@ -13,7 +13,7 @@ docker run \
 	--rm \
 	-i \
 	--volumes-from $GOLANG_VOLUMES_FROM \
-	-v $(pwd):$WORKING_DIR \
+	-v "$GOPATH/src":/go/src \
 	-v ~/.ssh:/root/ssh \
 	-w $WORKING_DIR \
 	--entrypoint go golang:$GOLANG_VERSION "$@"

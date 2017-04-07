@@ -41,7 +41,7 @@ a `.golang` file within your project directory.
 
 - [ ] Wrappers for `vim-go` binaries (Installed via `:GoInstallBinaries`)
 
-- [ ] Support for `vim-go` `:GoTest` being running in sub-directories to use
+- [x] Support for `vim-go` `:GoTest` being running in sub-directories to use
   the project `.golang`.
 
 - [ ] Parsing the `VERSION` from your project's `docker-compose.yml`
