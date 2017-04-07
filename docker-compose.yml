@@ -36,7 +36,7 @@ services:
       - "6060:6060"
     entrypoint: godoc
 
-  # install go get -u github.com/nsf/gocode
+  # install `go get -u github.com/nsf/gocode`
   gocode:
     extends:
       service: golang

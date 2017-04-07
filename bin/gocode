@@ -2,6 +2,11 @@
 # vim: set filetype=sh :
 set -e
 
+# gocode wrapper
+#
+#     go get -u github.com/nsf/gocode
+#
+
 COMPOSE_DIR="$(dirname $0)"
 COMPOSE_YML="$(pwd)/docker-compose.yml"
 
