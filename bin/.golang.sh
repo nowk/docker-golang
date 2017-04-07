@@ -12,3 +12,17 @@ if [ ! -f "$DOT_GOLANG" ]; then
 fi
 
 source "$DOT_GOLANG"
+
+
+# check for required vars
+
+if [ -z "$GOLANG_VERSION" ]; then
+	echo "GOLANG_VERSION must be set"
+	exit 1
+fi
+
+if [ -z "$GOLANG_VOLUMES_FROM" ]; then
+	echo "GOLANG_VOLUMES_FROM must be set"
+	exit 1
+fi
+
