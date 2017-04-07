@@ -15,7 +15,10 @@ fi
 # yml
 
 # replace pwd with the container's GOPATH (/go)
-WORKING_DIR="$(echo $(pwd) | sed "s#$GOPATH#/go#")"
+# NOTE the expression here is because the actual path we call GO from may not
+# be based on the $GOPATH, eg. Symoblic links, though in the $GOPATH when
+# called they are expanded to the symlink path
+WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
 
 if [ "${GO_DEBUG}" = true ]; then
 	echo "$@" >> "$(dirname $0)/../godoc.log" # debug

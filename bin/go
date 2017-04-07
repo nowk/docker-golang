@@ -14,7 +14,10 @@ fi
 # TODO check for the go services, else default to the docker-golang compose yml
 
 # replace pwd with the container's GOPATH (/go)
-WORKING_DIR="$(echo $(pwd) | sed "s#$GOPATH#/go#")"
+# NOTE the expression here is because the actual path we call GO from may not
+# be based on the $GOPATH, eg. Symoblic links, though in the $GOPATH when
+# called they are expanded to the symlink path
+WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
 
 if [ "${GO_DEBUG}" = true ]; then
 	echo "$WORKING_DIR" >> "$(dirname $0)/../go.log"
