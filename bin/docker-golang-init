@@ -1,0 +1,35 @@
+#!/bin/bash
+# vim: set filetype=sh :
+set -e
+
+# docker-golang setup file creates the shared volume, .golang file and installs
+# some of the core binaries needed for our wrappers
+
+
+COMPOSE_YML="$(pwd)/docker-compose.yml"
+
+# check for a docker-compose.yml in the working dir, else use the one packaged
+# with docker-golang
+if [ ! -f  "${COMPOSE_YML}" ]; then
+	echo "No docker-compose.yml file (in \`$(pwd)\`)"
+	exit 1;
+fi
+
+if [ "${RESET}" = true ]; then
+	docker-compose rm -v golang
+fi
+
+# create the docker-compose `golang` volume
+docker-compose create golang
+
+# reset the .golang file
+echo > $(pwd)/.golang
+
+# TODO get GOLANG_VERSION from the docker-compose.yml
+echo "GOLANG_VERSION=1.7.5" >> $(pwd)/.golang
+echo "GOLANG_VOLUMES_FROM=$(docker-compose ps -q golang)" >> $(pwd)/.golang
+
+# install the necessary core binaries
+go get -u github.com/nsf/gocode
+go get -u github.com/golang/lint/golint
+

@@ -3,9 +3,16 @@ services:
   golang:
     image: "golang:1.7.5"
     volumes:
-      - ${GOPATH}/src:/go/src
+      # - ${GOPATH}/src:/go/src
+
       - /go/bin
       - /go/pkg
+      # https://forums.docker.com/t/docker-compose-is-extremely-slow/8690
+      # - /etc/resolv.conf:/etc/resolv.conf
+
+  # these services are no longe used, at least not via the wrappers as they are
+  # 3x slower than running via a raw docker comand
+  # Leaving the go service just in case
 
   go:
     extends:
@@ -18,42 +25,42 @@ services:
     # NOTE this is set in ./bin/go through the -w flag
     # working_dir: ${WORKING_DIR}
 
-  gofmt:
-    extends:
-      service: golang
-    volumes_from:
-      - golang
-    volumes:
-      - /tmp:/tmp
-    entrypoint: gofmt
+  # gofmt:
+  #   extends:
+  #     service: golang
+  #   volumes_from:
+  #     - golang
+  #   volumes:
+  #     - /tmp:/tmp
+  #   entrypoint: gofmt
 
-  godoc:
-    extends:
-      service: golang
-    volumes_from:
-      - golang
-    ports:
-      - "6060:6060"
-    entrypoint: godoc
+  # godoc:
+  #   extends:
+  #     service: golang
+  #   volumes_from:
+  #     - golang
+  #   ports:
+  #     - "6060:6060"
+  #   entrypoint: godoc
 
-  # install `go get -u github.com/nsf/gocode`
-  gocode:
-    extends:
-      service: golang
-    volumes_from:
-      - golang
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-    ports:
-      - "37373:37373"
-    entrypoint: /go/bin/gocode
+  # # install `go get -u github.com/nsf/gocode`
+  # gocode:
+  #   extends:
+  #     service: golang
+  #   volumes_from:
+  #     - golang
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /tmp:/tmp
+  #   ports:
+  #     - "37373:37373"
+  #   entrypoint: /go/bin/gocode
 
-  # install `go get -u github.com/golang/lint/golint`
-  golint:
-    extends:
-      service: golang
-    volumes_from:
-      - golang
-    entrypoint: /go/bin/golint
+  # # install `go get -u github.com/golang/lint/golint`
+  # golint:
+  #   extends:
+  #     service: golang
+  #   volumes_from:
+  #     - golang
+  #   entrypoint: /go/bin/golint
 

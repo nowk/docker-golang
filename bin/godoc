@@ -2,17 +2,12 @@
 # vim: set filetype=sh :
 set -e
 
-COMPOSE_DIR="$(dirname $0)"
-COMPOSE_YML="$(pwd)/docker-compose.yml"
-
-# check for a docker-compose.yml in the working dir, else use the one packaged
-# with docker-golang
-if [ ! -f  "${COMPOSE_YML}" ]; then
-	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+if [ ! -f "$(pwd)/.golang" ]; then
+	echo "No \`.golang\` file (in \`$(pwd)\`), Run \`docker-golang-init\`"
+	exit 1
 fi
 
-# TODO check for the godoc services, else default to the docker-golang compose
-# yml
+source "$(pwd)/.golang"
 
 # replace pwd with the container's GOPATH (/go)
 # NOTE the expression here is because the actual path we call GO from may not
@@ -20,13 +15,11 @@ fi
 # called they are expanded to the symlink path
 WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
 
-if [ "${GO_DEBUG}" = true ]; then
-	echo "$@" >> "$(dirname $0)/../godoc.log" # debug
-fi
-
-docker-compose --file="${COMPOSE_YML}" run \
-	--no-deps \
+docker run \
 	--rm \
+	-i \
+	--volumes-from $GOLANG_VOLUMES_FROM \
+	-v $(pwd):$WORKING_DIR \
 	-w $WORKING_DIR \
-	godoc "$@"
+	--entrypoint godoc golang:$GOLANG_VERSION "$@"
 

@@ -2,51 +2,32 @@
 # vim: set filetype=sh :
 set -e
 
+if [ ! -f "$(pwd)/.golang" ]; then
+	echo "No \`.golang\` file (in \`$(pwd)\`), Run \`docker-golang-init\`"
+	exit 1
+fi
+
+source $(pwd)/.golang
+
 # gocode wrapper
 #
 #     go get -u github.com/nsf/gocode
 #
 
-COMPOSE_DIR="$(dirname $0)"
-COMPOSE_YML="$(pwd)/docker-compose.yml"
-
-# check for a docker-compose.yml in the working dir, else use the one packaged
-# with docker-golang
-if [ ! -f  "${COMPOSE_YML}" ]; then
-	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
-fi
-
-# TODO check for the gocodec service, else default to the docker-golang compose
-# yml
-
 # parse the args and replace the GOPATH here with that of the docker
 # container's GOPATH
+WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
+
+# parse out our local GOPATH for the container's GOPATH in the gocode arguments
 args=$(echo "$@" | sed "s#$GOPATH#/go#")
 
-if [ "${GO_DEBUG}" = true ]; then
-	echo "$args" >> "$(dirname $0)/../gocode.log"
-fi
-
-# the --no-deps flag is required here, or the "Starting..." output breaks
-# autocomplete, or at least with YCM
-docker-compose --file="${COMPOSE_YML}" run \
-	--no-deps \
+docker run \
 	--rm \
-	-T \
-	--service-ports \
-	gocode ${args[@]}
-
-
-# A close docker raw equivalent. Note volumes-from is shared volume to for
-# shared go stuff. Leaving for reference. Was used to test speed
-#
-# docker run \
-# 	-i \
-# 	--volumes-from dockergolang_golang_1 \
-# 	-v ${GOPATH}/src:/go/src \
-# 	-v /tmp:/tmp \
-# 	-P \
-# 	-p 37373:37373 \
-# 	--entrypoint gocode \
-# 	golang:1.7.5 ${args[@]}
+	-i \
+	--volumes-from $GOLANG_VOLUMES_FROM \
+	-v $(pwd):$WORKING_DIR \
+	-v /tmp:/tmp \
+	-P \
+	-p 37373:37373 \
+	--entrypoint /go/bin/gocode golang:$GOLANG_VERSION ${args[@]}
 

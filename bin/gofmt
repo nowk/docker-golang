@@ -2,21 +2,17 @@
 # vim: set filetype=sh :
 set -e
 
-COMPOSE_DIR="$(dirname $0)"
-COMPOSE_YML="$(pwd)/docker-compose.yml"
-
-# check for a docker-compose.yml in the working dir, else use the one packaged
-# with docker-golang
-if [ ! -f  "${COMPOSE_YML}" ]; then
-	COMPOSE_YML="${COMPOSE_DIR}/../docker-compose.yml"
+if [ ! -f "$(pwd)/.golang" ]; then
+	echo "No \`.golang\` file (in \`$(pwd)\`), Run \`docker-golang-init\`"
+	exit 1
 fi
 
-# TODO check for the gofmt services, else default to the docker-golang compose
-# yml
+source "$(pwd)/.golang"
 
-# NOTE docker-compose allows TTY by default
-docker-compose --file="${COMPOSE_YML}" run \
-	--no-deps \
+docker run \
 	--rm \
-	gofmt "$@"
+	-t \
+	--volumes-from $GOLANG_VOLUMES_FROM \
+	-v /tmp:/tmp \
+	--entrypoint gofmt golang:$GOLANG_VERSION "$@"
 
