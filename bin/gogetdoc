@@ -1,0 +1,25 @@
+#!/bin/bash
+# vim: set filetype=sh :
+set -e
+source "$(dirname $0)/.golang.sh"
+
+# gogetdoc wrapper
+#
+#     go get -u github.com/zmb3/gogetdoc
+#
+
+# replace pwd with the container's GOPATH (/go)
+# NOTE the expression here is because the actual path we call GO from may not
+# be based on the $GOPATH, eg. Symoblic links, though in the $GOPATH when
+# called they are expanded to the symlink path
+WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
+
+# parse out our local GOPATH for the container's GOPATH in the gocode arguments
+args=$(echo "$@" | sed "s#$GOPATH#/go#")
+
+docker run \
+	--rm \
+	--volumes-from $GOLANG_VOLUMES_FROM \
+	-v "$GOPATH/src":/go/src \
+	--entrypoint /go/bin/gogetdoc golang:$GOLANG_VERSION ${args[@]}
+
