@@ -9,9 +9,16 @@ source "$(dirname $0)/.golang.sh"
 # called they are expanded to the symlink path
 WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
 
+# ttyFlag is set when using `go get`
+ttyFlag=
+if [ "$1" == "get" ]; then
+	ttyFlag=-t
+fi
+
 docker run \
 	--rm \
 	-i \
+	$ttyFlag \
 	--volumes-from $GOLANG_VOLUMES_FROM \
 	-v "$GOPATH/src":/go/src \
 	-v ~/.ssh:/root/.ssh \
