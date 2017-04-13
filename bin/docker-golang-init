@@ -38,3 +38,4 @@ go get -u github.com/zmb3/gogetdoc
 
 # vendor
 go get -u github.com/govend/govend
+go get -u github.com/Masterminds/glide
