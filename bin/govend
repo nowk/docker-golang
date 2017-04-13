@@ -1,0 +1,38 @@
+#!/bin/bash
+# vim: set filetype=sh :
+set -e
+source "$(dirname $0)/.golang.sh"
+
+# govend wrapper
+#
+#     go get -u github.com/govend/govend
+#
+
+WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
+
+gitConfigVolumeFlag=
+if [ -f $(pwd)/.gitconfig ]; then
+	gitConfigVolumeFlag="-v $(pwd)/.gitconfig:/root/.gitconfig"
+fi
+if [ -z "$gitConfigVolumeFlag" ]; then
+	if [ -f ~/.gitconfig ]; then
+		gitConfigVolumeFlag="-v ~/.gitconfig:/root/.gitconfig"
+	fi
+fi
+
+sshAuthSockFlags=
+if [ ! -z "$SSH_AUTH_SOCK" ]; then
+	sshAuthSockFlags="-v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK}"
+fi
+
+docker run \
+	--rm \
+	-it \
+	--volumes-from $GOLANG_VOLUMES_FROM \
+	-v $(pwd):$WORKING_DIR \
+	-v ~/.ssh:/root/.ssh \
+	$sshAuthSockFlags \
+	$gitConfigVolumeFlag \
+	-w $WORKING_DIR \
+	--entrypoint /go/bin/govend golang:$GOLANG_VERSION "$@"
+
