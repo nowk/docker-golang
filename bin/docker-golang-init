@@ -36,3 +36,5 @@ go get -u github.com/golang/lint/golint
 # vim-go :GoDoc
 go get -u github.com/zmb3/gogetdoc
 
+# vendor
+go get -u github.com/govend/govend
