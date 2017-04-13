@@ -15,8 +15,8 @@ if [ -f $(pwd)/.gitconfig ]; then
 	gitConfigVolumeFlag="-v $(pwd)/.gitconfig:/root/.gitconfig"
 fi
 if [ -z "$gitConfigVolumeFlag" ]; then
-	if [ -f ~/.gitconfig ]; then
-		gitConfigVolumeFlag="-v ~/.gitconfig:/root/.gitconfig"
+	if [ -f "$HOME/.gitconfig" ]; then
+		gitConfigVolumeFlag="-v $HOME/.gitconfig:/root/.gitconfig"
 	fi
 fi
 
