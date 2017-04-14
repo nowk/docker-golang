@@ -29,7 +29,7 @@ docker run \
 	--rm \
 	-it \
 	--volumes-from $GOLANG_VOLUMES_FROM \
-	-v $(pwd):$WORKING_DIR \
+	-v "$GOPATH/src":/go/src \
 	-v ~/.ssh:/root/.ssh \
 	$sshAuthSockFlags \
 	$gitConfigVolumeFlag \
