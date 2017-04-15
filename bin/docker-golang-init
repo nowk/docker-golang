@@ -22,6 +22,13 @@ fi
 # parse the docker-compose.yml
 eval $(parse_yaml $COMPOSE_YML)
 
+# check for a golang service inside the docker-compose.yml file in use.
+# NOTE we can't change $service_golang itself, so look for the "image"
+if [ -z "$services_golang_image" ]; then
+	echo 'Requires a `golang` service in your docker-compose.yml'
+	exit 1
+fi
+
 GOLANG_VERSION=$(echo "$services_golang_image" | sed 's/golang:\(.*\)/\1/g')
 
 # create the docker-compose `golang` volume
