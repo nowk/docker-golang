@@ -44,7 +44,7 @@ a `.golang` file within your project directory.
 - [x] Support for `vim-go` `:GoTest` being running in sub-directories to use
   the project `.golang`.
 
-- [ ] Parsing the `VERSION` from your project's `docker-compose.yml`
+- [x] Parsing the `VERSION` from your project's `docker-compose.yml`
 
 
 ## License
