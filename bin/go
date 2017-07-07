@@ -2,12 +2,30 @@
 # vim: set filetype=sh :
 set -e
 source "$(dirname $0)/.golang.sh"
+source "$(dirname $0)/.parse_yaml.sh"
 
 # replace pwd with the container's GOPATH (/go)
 # NOTE the expression here is because the actual path we call GO from may not
 # be based on the $GOPATH, eg. Symoblic links, though in the $GOPATH when
 # called they are expanded to the symlink path
 WORKING_DIR="$(echo $(pwd) | sed -E "s#^(.+)/go/#/go/#")"
+
+# when running `go test` look for a docker-compose.yml file to run the test
+# through the docker compose `test` service to enable links or other required
+# dependencies needed to run the test in full
+docker_compose_yml="$(pwd)/docker-compose.yml"
+if [ "$1" == "test" ] && [ -f "$docker_compose_yml" ]; then
+
+	parse_yaml "$docker_compose_yml"
+
+	if [ -z ${services_gotest} ]; then
+		echo 'running `go test` via docker-compose'
+		shift # pop off `test
+		docker-compose run --rm gotest "$@"
+
+		exit 0
+	fi
+fi
 
 # ttyFlag is set when using `go get`
 ttyFlag=
